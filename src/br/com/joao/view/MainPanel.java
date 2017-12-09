@@ -1,5 +1,8 @@
 package br.com.joao.view;
 
+import br.com.joao.model.Engineer;
+import br.com.joao.model.Train;
+import br.com.joao.model.TrainTableModel;
 import java.awt.BorderLayout;
 import java.awt.Dialog;
 import java.awt.Dimension;
@@ -8,8 +11,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -18,7 +21,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -28,7 +30,8 @@ import javax.swing.table.DefaultTableModel;
 public class MainPanel extends JPanel {
 
     private final JButton btnAdd, btnClear, btnRemove, btnSearch, btnViewLines;
-    private final JComboBox<String> comboEng, comboType;
+    private final JComboBox<Train.Type> comboType;
+    private final JComboBox<Engineer> comboEng;
     private final JLabel lblEng, lblId, lblIdValue, lblType;
     private final JPanel panelForm, panelSearch, panelTrains;
     private final JScrollPane scrollTrains;
@@ -37,6 +40,8 @@ public class MainPanel extends JPanel {
 
     private static final Dimension MIN_SIZE = new Dimension(567, 489);
     private JDialog dialog;
+
+    private static final String AUTO_INCREMENT = "Automático";
 
     /**
      * Creates the main panel.
@@ -47,13 +52,13 @@ public class MainPanel extends JPanel {
         panelForm = new JPanel(new GridBagLayout());
 
         lblEng = new JLabel("Engenheiro:");
-        comboEng = new JComboBox<>(new DefaultComboBoxModel<>(new String[]{"João", " "}));
+        comboEng = new JComboBox<>();
 
         lblId = new JLabel("#ID");
-        lblIdValue = new JLabel("1");
+        lblIdValue = new JLabel(AUTO_INCREMENT);
 
         lblType = new JLabel("Tipo:");
-        comboType = new JComboBox<>(new DefaultComboBoxModel<>(new String[]{"Local", "Expresso"}));
+        comboType = new JComboBox<>();
 
         btnAdd = new JButton("Adicionar");
         btnRemove = new JButton("Remover");
@@ -61,15 +66,7 @@ public class MainPanel extends JPanel {
 
         panelTrains = new JPanel(new BorderLayout());
         scrollTrains = new JScrollPane();
-        tableTrains = new JTable(new DefaultTableModel(
-                new Object[][]{
-                    {"1", "João", "Local"},
-                    {"2", "Víctor", "Expresso"}
-                },
-                new String[]{
-                    "#ID", "Engenheiro", "Tipo"
-                }
-        ));
+        tableTrains = new JTable(TrainTableModel.getInstance());
         panelSearch = new JPanel(new GridBagLayout());
 
         txtSearch = new JTextField();
@@ -77,7 +74,21 @@ public class MainPanel extends JPanel {
         btnViewLines = new JButton("Ver Linhas e Horários");
 
         addListeners();
+        fillFields();
         init();
+    }
+
+    private void fillFields() {
+        List<Engineer> engineers = Engineer.getEngineers();
+        for (Engineer eng : engineers) {
+            comboEng.addItem(eng);
+        }
+
+        List<Train.Type> types = Train.Type.getTypes();
+        for (Train.Type type : types) {
+            comboType.addItem(type);
+        }
+
     }
 
     private void addListeners() {
@@ -107,7 +118,7 @@ public class MainPanel extends JPanel {
         cons.gridy = 1;
         cons.gridwidth = 3;
         cons.gridheight = 2;
-        cons.ipadx = 348;
+        cons.fill = GridBagConstraints.HORIZONTAL;
         cons.anchor = GridBagConstraints.NORTHWEST;
         cons.insets = new Insets(6, 12, 0, 14);
         panelForm.add(comboEng, cons);
@@ -124,7 +135,7 @@ public class MainPanel extends JPanel {
         cons.gridy = 2;
         cons.gridwidth = 3;
         cons.gridheight = 2;
-        cons.ipadx = 316;
+        cons.fill = GridBagConstraints.HORIZONTAL;
         cons.anchor = GridBagConstraints.NORTHWEST;
         cons.insets = new Insets(6, 12, 0, 14);
         panelForm.add(comboType, cons);
@@ -132,7 +143,7 @@ public class MainPanel extends JPanel {
         cons = new GridBagConstraints();
         cons.gridx = 0;
         cons.gridy = 0;
-        cons.ipadx = 62;
+        cons.fill = GridBagConstraints.HORIZONTAL;
         cons.anchor = GridBagConstraints.NORTHWEST;
         cons.insets = new Insets(15, 14, 0, 0);
         panelForm.add(lblId, cons);
@@ -141,7 +152,7 @@ public class MainPanel extends JPanel {
         cons.gridx = 1;
         cons.gridy = 0;
         cons.gridwidth = 3;
-        cons.ipadx = 399;
+        cons.fill = GridBagConstraints.HORIZONTAL;
         cons.anchor = GridBagConstraints.NORTHWEST;
         cons.insets = new Insets(15, 12, 0, 14);
         panelForm.add(lblIdValue, cons);

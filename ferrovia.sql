@@ -12,27 +12,58 @@ CREATE TABLE `engenheiro` (
   `nome` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `engenheiro` (`id`, `nome`) VALUES
+(1, 'Joao Bolsson'),
+(2, 'Leonardo'),
+(3, 'Henry'),
+(4, 'Daniele'),
+(5, 'Renata');
+
 CREATE TABLE `estacao` (
   `id` smallint(5) UNSIGNED NOT NULL,
   `nome` varchar(20) NOT NULL,
-  `endereco` varchar(50) NOT NULL
+  `endereco` varchar(50) NOT NULL,
+  `tipo` tinyint(3) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `estacao` (`id`, `nome`, `endereco`, `tipo`) VALUES
+(1, 'Estacao Legal', 'Rua dos Bobos 0', 1),
+(2, 'Estacao da Gare', 'Rua Joao das Cove', 2),
+(3, 'Estacao Huahau', 'Rua Andre Marques', 2),
+(4, 'Estacao Heheheh', 'Rua Silva Jardim', 2),
+(5, 'Estacao Ola mundo', 'Av Rio Branco', 1);
 
 CREATE TABLE `tipo_estacao` (
   `id` tinyint(3) UNSIGNED NOT NULL,
   `nome` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `tipo_estacao` (`id`, `nome`) VALUES
+(1, 'Expressa'),
+(2, 'Local');
+
 CREATE TABLE `tipo_trem` (
   `id` tinyint(3) UNSIGNED NOT NULL,
   `nome` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `tipo_trem` (`id`, `nome`) VALUES
+(1, 'Expresso'),
+(2, 'Local');
 
 CREATE TABLE `trem` (
   `id` smallint(5) UNSIGNED NOT NULL,
   `engenheiro` smallint(5) UNSIGNED NOT NULL,
   `tipo` tinyint(3) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `trem` (`id`, `engenheiro`, `tipo`) VALUES
+(2, 1, 1),
+(3, 2, 1),
+(5, 2, 2),
+(6, 3, 2),
+(7, 5, 1),
+(8, 4, 1);
 
 CREATE TABLE `trem_estacao` (
   `id_trem` smallint(5) UNSIGNED NOT NULL,
@@ -46,7 +77,8 @@ ALTER TABLE `engenheiro`
   ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `estacao`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `tipo` (`tipo`);
 
 ALTER TABLE `tipo_estacao`
   ADD PRIMARY KEY (`id`);
@@ -65,15 +97,18 @@ ALTER TABLE `trem_estacao`
 
 
 ALTER TABLE `engenheiro`
-  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 ALTER TABLE `estacao`
-  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 ALTER TABLE `tipo_estacao`
-  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 ALTER TABLE `tipo_trem`
-  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 ALTER TABLE `trem`
-  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+ALTER TABLE `estacao`
+  ADD CONSTRAINT `estacao_ibfk_1` FOREIGN KEY (`tipo`) REFERENCES `tipo_estacao` (`id`);
 
 ALTER TABLE `trem`
   ADD CONSTRAINT `trem_ibfk_1` FOREIGN KEY (`engenheiro`) REFERENCES `engenheiro` (`id`),

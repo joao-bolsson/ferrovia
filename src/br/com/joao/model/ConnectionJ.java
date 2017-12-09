@@ -29,7 +29,7 @@ public class ConnectionJ {
                 Class.forName(driverName);
                 String serverName = settings.getServer();
                 String mydatabase = settings.getDatabase();
-                String url = "jdbc:mysql://" + serverName + "/" + mydatabase;
+                String url = "jdbc:mysql://" + serverName + "/" + mydatabase + "?useSSL=false";
                 String username = settings.getUser();
                 String password = settings.getPassword();
 
