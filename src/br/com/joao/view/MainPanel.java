@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -25,7 +27,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class MainPanel extends JPanel {
 
-    private final JButton btnAdd, btnClear, btnRemove, btnSearch;
+    private final JButton btnAdd, btnClear, btnRemove, btnSearch, btnViewLines;
     private final JComboBox<String> comboEng;
     private final JLabel lblEng, lblId, lblIdValue;
     private final JPanel panelForm, panelSearch, panelTrains;
@@ -33,7 +35,8 @@ public class MainPanel extends JPanel {
     private final JTable tableTrains;
     private final JTextField txtSearch;
 
-    private static final Dimension MIN_SIZE = new Dimension(567, 409);
+    private static final Dimension MIN_SIZE = new Dimension(567, 459);
+    private JDialog dialog;
 
     /**
      * Creates the main panel.
@@ -59,11 +62,23 @@ public class MainPanel extends JPanel {
                     "#ID", "Engenheiro"
                 }
         ));
-        panelSearch = new JPanel();
+        panelSearch = new JPanel(new GridBagLayout());
         txtSearch = new JTextField();
         btnSearch = new JButton("Pesquisar");
+        btnViewLines = new JButton("Ver Linhas e Horários");
 
+        addListeners();
         init();
+    }
+
+    private void addListeners() {
+        btnViewLines.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                PanelLines panelLines = new PanelLines();
+                panelLines.showAsDialog(dialog);
+            }
+        });
     }
 
     private void init() {
@@ -150,9 +165,15 @@ public class MainPanel extends JPanel {
         cons.insets = new Insets(6, 12, 9, 12);
         add(panelTrains, cons);
 
+        cons = new GridBagConstraints();
+        cons.gridx = 0;
+        cons.gridy = 3;
+        cons.anchor = GridBagConstraints.NORTHWEST;
+        cons.insets = new Insets(10, 10, 10, 10);
+        add(btnViewLines, cons);
+
         panelSearch.setBorder(BorderFactory.createEtchedBorder());
         panelSearch.setMinimumSize(new Dimension(143, 53));
-        panelSearch.setLayout(new GridBagLayout());
         cons = new GridBagConstraints();
         cons.gridx = 0;
         cons.gridy = 0;
@@ -180,7 +201,7 @@ public class MainPanel extends JPanel {
     }
 
     private void showAsDialog() {
-        JDialog dialog = new JDialog(null, Dialog.ModalityType.APPLICATION_MODAL);
+        dialog = new JDialog(null, Dialog.ModalityType.APPLICATION_MODAL);
 
         dialog.setTitle("Ferroviária");
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
