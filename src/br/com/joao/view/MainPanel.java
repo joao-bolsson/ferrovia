@@ -28,14 +28,14 @@ import javax.swing.table.DefaultTableModel;
 public class MainPanel extends JPanel {
 
     private final JButton btnAdd, btnClear, btnRemove, btnSearch, btnViewLines;
-    private final JComboBox<String> comboEng;
-    private final JLabel lblEng, lblId, lblIdValue;
+    private final JComboBox<String> comboEng, comboType;
+    private final JLabel lblEng, lblId, lblIdValue, lblType;
     private final JPanel panelForm, panelSearch, panelTrains;
     private final JScrollPane scrollTrains;
     private final JTable tableTrains;
     private final JTextField txtSearch;
 
-    private static final Dimension MIN_SIZE = new Dimension(567, 459);
+    private static final Dimension MIN_SIZE = new Dimension(567, 489);
     private JDialog dialog;
 
     /**
@@ -45,24 +45,33 @@ public class MainPanel extends JPanel {
         super(new GridBagLayout());
 
         panelForm = new JPanel(new GridBagLayout());
+
         lblEng = new JLabel("Engenheiro:");
         comboEng = new JComboBox<>(new DefaultComboBoxModel<>(new String[]{"João", " "}));
+
         lblId = new JLabel("#ID");
         lblIdValue = new JLabel("1");
+
+        lblType = new JLabel("Tipo:");
+        comboType = new JComboBox<>(new DefaultComboBoxModel<>(new String[]{"Local", "Expresso"}));
+
         btnAdd = new JButton("Adicionar");
         btnRemove = new JButton("Remover");
         btnClear = new JButton("Limpar");
+
         panelTrains = new JPanel(new BorderLayout());
         scrollTrains = new JScrollPane();
         tableTrains = new JTable(new DefaultTableModel(
                 new Object[][]{
-                    {"1", "João"}
+                    {"1", "João", "Local"},
+                    {"2", "Víctor", "Expresso"}
                 },
                 new String[]{
-                    "#ID", "Engenheiro"
+                    "#ID", "Engenheiro", "Tipo"
                 }
         ));
         panelSearch = new JPanel(new GridBagLayout());
+
         txtSearch = new JTextField();
         btnSearch = new JButton("Pesquisar");
         btnViewLines = new JButton("Ver Linhas e Horários");
@@ -102,6 +111,23 @@ public class MainPanel extends JPanel {
         cons.anchor = GridBagConstraints.NORTHWEST;
         cons.insets = new Insets(6, 12, 0, 14);
         panelForm.add(comboEng, cons);
+
+        cons = new GridBagConstraints();
+        cons.gridx = 0;
+        cons.gridy = 2;
+        cons.anchor = GridBagConstraints.NORTHWEST;
+        cons.insets = new Insets(11, 14, 0, 0);
+        panelForm.add(lblType, cons);
+
+        cons = new GridBagConstraints();
+        cons.gridx = 1;
+        cons.gridy = 2;
+        cons.gridwidth = 3;
+        cons.gridheight = 2;
+        cons.ipadx = 316;
+        cons.anchor = GridBagConstraints.NORTHWEST;
+        cons.insets = new Insets(6, 12, 0, 14);
+        panelForm.add(comboType, cons);
 
         cons = new GridBagConstraints();
         cons.gridx = 0;
