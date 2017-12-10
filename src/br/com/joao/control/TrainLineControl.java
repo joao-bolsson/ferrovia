@@ -95,8 +95,9 @@ public class TrainLineControl {
         try {
             Connection conn = ConnectionJ.getConnection();
             try (Statement stmt = conn.createStatement()) {
-                StringBuilder query = new StringBuilder(
-                        "SELECT id_trem, id_estacao, hora_ida, hora_volta FROM trem_estacao");
+                String view_name = "viewTrain" + trainSearch.getId() + "Station" + stationSearch.getId();
+                StringBuilder query = new StringBuilder("CREATE OR REPLACE VIEW ");
+                query.append(view_name).append(" AS SELECT id_trem, id_estacao, hora_ida, hora_volta FROM trem_estacao");
 
                 String whereTrain = "", whereStation = "";
                 if (!trainSearch.equals(Train.ALL)) {
@@ -117,9 +118,10 @@ public class TrainLineControl {
                     }
                 }
                 query.append(";");
-                System.out.println(query.toString());
 
-                ResultSet rs = stmt.executeQuery(query.toString());
+                stmt.executeUpdate(query.toString());
+
+                ResultSet rs = stmt.executeQuery("SELECT * FROM " + view_name);
 
                 List<TrainLine> lines = new ArrayList<>();
                 while (rs.next()) {
