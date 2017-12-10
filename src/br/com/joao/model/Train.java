@@ -96,6 +96,42 @@ public class Train {
         this.type = type;
     }
 
+    /**
+     * @return All engineers in database.
+     */
+    public static List<Train> getTrains() {
+        List<Train> list = new ArrayList<>();
+        try {
+            Connection conn = ConnectionJ.getConnection();
+            try (Statement stmt = conn.createStatement()) {
+                ResultSet rs = stmt.executeQuery("SELECT id, engenheiro, tipo FROM trem;");
+
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    int idEng = rs.getInt("engenheiro");
+                    int idType = rs.getInt("tipo");
+
+                    Engineer engineer = Engineer.getEngineer(idEng);
+                    Train.Type type = Train.Type.getType(idType);
+
+                    Train train = new Train(id, engineer, type);
+                    list.add(train);
+                }
+            }
+        } catch (final SQLException ex) {
+            System.out.println(ex);
+        }
+        return list;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("#");
+        builder.append(id).append(" - ").append(engineer.getName()).append(" - ").append(type.name);
+
+        return builder.toString();
+    }
+
     @Override
     public int hashCode() {
         int hash = 5;
@@ -106,7 +142,7 @@ public class Train {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -161,7 +197,7 @@ public class Train {
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if (this == obj) {
                 return true;
             }

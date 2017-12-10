@@ -1,5 +1,7 @@
 package br.com.joao.view;
 
+import br.com.joao.model.Station;
+import br.com.joao.model.Train;
 import java.awt.BorderLayout;
 import java.awt.Dialog;
 import java.awt.Dimension;
@@ -8,8 +10,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -30,7 +32,8 @@ import javax.swing.text.DefaultFormatterFactory;
 public class PanelLines extends JPanel {
 
     private final JButton btnSearch, btnAdd, btnRemove, btnClear;
-    private final JComboBox<String> comboStation, comboStationSearch, comboTrain, comboTrainSearch;
+    private final JComboBox<Station> comboStation, comboStationSearch;
+    private final JComboBox<Train> comboTrain, comboTrainSearch;
     private final JLabel lblDepartureTime, lblReturnTime, lblStation, lblStationSearch, lblTrain, lblTrainSearch;
     private final JPanel panelForm, panelSearch, panelTable;
     private final JScrollPane scrollTable;
@@ -47,11 +50,9 @@ public class PanelLines extends JPanel {
 
         panelForm = new JPanel(new GridBagLayout());
         lblTrain = new JLabel("Trem");
-        comboTrain = new JComboBox<>(
-                new DefaultComboBoxModel<>(new String[]{"Item 1", "Item 2", "Item 3", "Item 4"}));
+        comboTrain = new JComboBox<>();
         lblStation = new JLabel("Estação");
-        comboStation = new JComboBox<>(
-                new DefaultComboBoxModel<>(new String[]{"Item 1", "Item 2", "Item 3", "Item 4"}));
+        comboStation = new JComboBox<>();
         lblDepartureTime = new JLabel("Horário de Ida");
         txtDepartureTime = new JFormattedTextField();
         lblReturnTime = new JLabel("Horário de Volta");
@@ -71,12 +72,27 @@ public class PanelLines extends JPanel {
         ));
         panelSearch = new JPanel(new GridBagLayout());
         lblTrainSearch = new JLabel("Trem");
-        comboTrainSearch = new JComboBox<>(new DefaultComboBoxModel<>(new String[]{"Todos"}));
+        comboTrainSearch = new JComboBox<>();
         lblStationSearch = new JLabel("Estação");
-        comboStationSearch = new JComboBox<>(new DefaultComboBoxModel<>(new String[]{"Todas"}));
+        comboStationSearch = new JComboBox<>();
         btnSearch = new JButton("Pesquisar");
 
+        fillFields();
         init();
+    }
+
+    private void fillFields() {
+        List<Train> trains = Train.getTrains();
+        for (Train train : trains) {
+            comboTrain.addItem(train);
+            comboTrainSearch.addItem(train);
+        }
+
+        List<Station> stations = Station.getStations();
+        for (Station station : stations) {
+            comboStation.addItem(station);
+            comboStationSearch.addItem(station);
+        }
     }
 
     private void init() {
@@ -94,7 +110,7 @@ public class PanelLines extends JPanel {
         cons.gridx = 0;
         cons.gridy = 1;
         cons.gridwidth = 3;
-        cons.ipadx = 158;
+        cons.fill = GridBagConstraints.HORIZONTAL;
         cons.anchor = GridBagConstraints.NORTHWEST;
         cons.insets = new Insets(6, 14, 0, 0);
         panelForm.add(comboTrain, cons);
@@ -111,7 +127,7 @@ public class PanelLines extends JPanel {
         cons.gridx = 5;
         cons.gridy = 1;
         cons.gridwidth = 13;
-        cons.ipadx = 192;
+        cons.fill = GridBagConstraints.HORIZONTAL;
         cons.anchor = GridBagConstraints.NORTHWEST;
         cons.insets = new Insets(6, 12, 0, 14);
         panelForm.add(comboStation, cons);
@@ -211,7 +227,7 @@ public class PanelLines extends JPanel {
         cons.gridx = 0;
         cons.gridy = 1;
         cons.gridwidth = 2;
-        cons.ipadx = 158;
+        cons.fill = GridBagConstraints.HORIZONTAL;
         cons.anchor = GridBagConstraints.NORTHWEST;
         cons.insets = new Insets(6, 17, 0, 0);
         panelSearch.add(comboTrainSearch, cons);
@@ -227,7 +243,7 @@ public class PanelLines extends JPanel {
         cons.gridx = 2;
         cons.gridy = 1;
         cons.gridwidth = 2;
-        cons.ipadx = 190;
+        cons.fill = GridBagConstraints.HORIZONTAL;
         cons.anchor = GridBagConstraints.NORTHWEST;
         cons.insets = new Insets(6, 12, 0, 17);
         panelSearch.add(comboStationSearch, cons);
