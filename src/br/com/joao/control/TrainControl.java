@@ -16,6 +16,27 @@ import java.sql.Statement;
 public class TrainControl {
 
     /**
+     * Update a train
+     *
+     * @param train Train to update.
+     */
+    public static void update(final Train train) {
+        try {
+            Connection conn = ConnectionJ.getConnection();
+            try (Statement stmt = conn.createStatement()) {
+                StringBuilder builder = new StringBuilder("UPDATE trem SET engenheiro=");
+                builder.append(train.getEngineer().getId()).append(", tipo=").
+                        append(train.getType().getId()).append(" WHERE id=").append(train.getId());
+
+                stmt.executeUpdate(builder.toString());
+                TrainTableModel.getInstance().fireTableDataChanged();
+            }
+        } catch (final SQLException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    /**
      * Remove a train.
      *
      * @param train Train to remove.

@@ -139,8 +139,20 @@ public class MainPanel extends JPanel {
         btnAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                Train train = new Train((Engineer) comboEng.getSelectedItem(), (Train.Type) comboType.getSelectedItem());
-                TrainControl.add(train);
+                if (lblIdValue.getText().equals(AUTO_INCREMENT)) {
+                    Train train = new Train((Engineer) comboEng.getSelectedItem(),
+                            (Train.Type) comboType.getSelectedItem());
+                    TrainControl.add(train);
+                } else {
+                    Object valueAt = TrainTableModel.getInstance().getValueAt(rowSelected, TrainTableModel.TRAIN_COLUMN);
+                    if (valueAt instanceof Train) {
+                        Train train = (Train) valueAt;
+                        train.setEngineer((Engineer) comboEng.getSelectedItem());
+                        train.setType((Train.Type) comboType.getSelectedItem());
+
+                        TrainControl.update(train);
+                    }
+                }
                 tableTrains.repaint();
                 clear();
             }
