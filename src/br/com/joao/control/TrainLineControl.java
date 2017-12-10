@@ -6,8 +6,11 @@ import br.com.joao.model.Train;
 import br.com.joao.model.TrainLine;
 import br.com.joao.model.TrainLinesTableModel;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -83,4 +86,61 @@ public class TrainLineControl {
             System.out.println(ex);
         }
     }
+
+    public static void search(final Train trainSearch, final Station stationSearch) {
+        if (trainSearch == null || stationSearch == null) {
+            System.out.println("Search for train line not accept null values.");
+            return;
+        }
+        try {
+            Connection conn = ConnectionJ.getConnection();
+            try (Statement stmt = conn.createStatement()) {
+                StringBuilder query = new StringBuilder(
+                        "SELECT id_trem, id_estacao, hora_ida, hora_volta FROM trem_estacao");
+
+                String whereTrain = "", whereStation = "";
+                if (!trainSearch.equals(Train.ALL)) {
+                    whereTrain = "id_trem = " + trainSearch.getId();
+                }
+
+                if (!stationSearch.equals(Station.ALL)) {
+                    whereStation = "id_estacao = " + stationSearch.getId();
+                }
+
+                if (!whereTrain.isEmpty() || !whereStation.isEmpty()) {
+                    query.append(" WHERE ").append(whereTrain);
+                    if (!whereStation.isEmpty()) {
+                        if (!whereTrain.isEmpty()) {
+                            query.append(" AND ");
+                        }
+                        query.append(whereStation);
+                    }
+                }
+                query.append(";");
+                System.out.println(query.toString());
+
+                ResultSet rs = stmt.executeQuery(query.toString());
+
+                List<TrainLine> lines = new ArrayList<>();
+                while (rs.next()) {
+                    int idTrain = rs.getInt("id_trem");
+                    int idStation = rs.getInt("id_estacao");
+                    String departureTime = rs.getString("hora_ida");
+                    String returnTime = rs.getString("hora_volta");
+
+                    Train train = Train.getTrain(idTrain);
+                    Station station = Station.getStation(idStation);
+
+                    TrainLine trainLine = new TrainLine(station, train, departureTime, returnTime);
+
+                    lines.add(trainLine);
+                }
+
+                TrainLinesTableModel.getInstance().addAll(lines);
+            }
+        } catch (final SQLException ex) {
+            System.out.println(ex);
+        }
+    }
+
 }

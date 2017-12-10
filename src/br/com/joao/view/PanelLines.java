@@ -107,7 +107,8 @@ public class PanelLines extends JPanel {
 
     private void fillStationSearch(final Train train) {
         comboStationSearch.removeAllItems();
-        boolean express = train.getType().getId() == 1;
+        boolean express = train.getType().getId() == 1 && !train.equals(Train.ALL);
+        comboStationSearch.addItem(Station.ALL);
         for (Station station : STATIONS) {
             if (express) {
                 // express trains stop only in express stations
@@ -131,6 +132,15 @@ public class PanelLines extends JPanel {
     }
 
     private void addListeners() {
+        btnSearch.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                TrainLineControl.search((Train) comboTrainSearch.getSelectedItem(),
+                        (Station) comboStationSearch.getSelectedItem());
+                table.repaint();
+            }
+        });
+
         btnClear.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
@@ -239,13 +249,14 @@ public class PanelLines extends JPanel {
 
     private void fillFields() {
         List<Train> trains = Train.getTrains();
+        comboTrainSearch.addItem(Train.ALL);
         for (Train train : trains) {
             comboTrain.addItem(train);
             comboTrainSearch.addItem(train);
         }
 
         fillStation(trains.get(0));
-        fillStationSearch(trains.get(0));
+        fillStationSearch(Train.ALL);
     }
 
     private void init() {

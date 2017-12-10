@@ -25,6 +25,8 @@ public class Station {
 
     private static final Map<Integer, Station> STATIONS = new HashMap<>();
 
+    public static final Station ALL = new Station(0, "", "", Type.getType(1));
+
     /**
      * Creates a station.
      *
@@ -131,6 +133,9 @@ public class Station {
 
     @Override
     public String toString() {
+        if (id == 0) {
+            return "Todas";
+        }
         return name;
     }
 

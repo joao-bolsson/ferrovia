@@ -124,4 +124,15 @@ public class TrainLinesTableModel extends AbstractTableModel {
         fireTableDataChanged();
     }
 
+    /**
+     * Add all the list in this table model.
+     *
+     * @param trainLines Lines to add.
+     */
+    public void addAll(final List<TrainLine> trainLines) {
+        lines.clear();
+        lines.addAll(trainLines);
+        fireTableDataChanged();
+    }
+
 }

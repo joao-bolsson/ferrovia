@@ -25,6 +25,20 @@ public class Train {
 
     private static final Map<Integer, Train> TRAINS = new HashMap<>();
 
+    public static final Train ALL = new Train(0, Type.getType(1));
+
+    /**
+     * Creates a train
+     *
+     * @param id Train id.
+     * @param type Train type.
+     */
+    public Train(final int id, final Type type) {
+        this.id = id;
+        this.type = type;
+        this.engineer = null;
+    }
+
     /**
      * Creates a new Train.
      *
@@ -144,7 +158,11 @@ public class Train {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("#");
-        builder.append(id).append(" - ").append(type.name);
+        if (id == 0) {
+            builder.append("Todos");
+        } else {
+            builder.append(id).append(" - ").append(type.name);
+        }
 
         return builder.toString();
     }
