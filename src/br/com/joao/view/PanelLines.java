@@ -10,6 +10,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -42,6 +44,8 @@ public class PanelLines extends JPanel {
 
     private static final Dimension MIN_SIZE = new Dimension(570, 489);
 
+    private static final List<Station> STATIONS = Station.getStations();
+
     /**
      * Creates a panel to show lines.
      */
@@ -71,7 +75,65 @@ public class PanelLines extends JPanel {
         btnSearch = new JButton("Pesquisar");
 
         fillFields();
+        addListeners();
         init();
+    }
+
+    private void fillStation(final Train train) {
+        comboStation.removeAllItems();
+        boolean express = train.getType().getId() == 1;
+        for (Station station : STATIONS) {
+            if (express) {
+                // express trains stop only in express stations
+                if (station.getType().getId() == 1) {
+                    comboStation.addItem(station);
+                }
+            } else {
+                // local trains stop in all stations
+                comboStation.addItem(station);
+            }
+        }
+    }
+
+    private void fillStationSearch(final Train train) {
+        comboStationSearch.removeAllItems();
+        boolean express = train.getType().getId() == 1;
+        for (Station station : STATIONS) {
+            if (express) {
+                // express trains stop only in express stations
+                if (station.getType().getId() == 1) {
+                    comboStationSearch.addItem(station);
+                }
+            } else {
+                // local trains stop in all stations
+                comboStationSearch.addItem(station);
+            }
+        }
+    }
+
+    private void addListeners() {
+        comboTrain.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(final ItemEvent e) {
+                Object item = e.getItem();
+                if (item instanceof Train) {
+                    Train train = (Train) item;
+                    fillStation(train);
+                }
+            }
+        });
+
+        comboTrainSearch.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(final ItemEvent e) {
+                Object item = e.getItem();
+                if (item instanceof Train) {
+                    Train train = (Train) item;
+
+                    fillStationSearch(train);
+                }
+            }
+        });
     }
 
     private void fillFields() {
@@ -81,11 +143,8 @@ public class PanelLines extends JPanel {
             comboTrainSearch.addItem(train);
         }
 
-        List<Station> stations = Station.getStations();
-        for (Station station : stations) {
-            comboStation.addItem(station);
-            comboStationSearch.addItem(station);
-        }
+        fillStation(trains.get(0));
+        fillStationSearch(trains.get(0));
     }
 
     private void init() {
@@ -201,7 +260,7 @@ public class PanelLines extends JPanel {
         cons = new GridBagConstraints();
         cons.gridx = 0;
         cons.gridy = 2;
-        cons.ipadx = 514;
+        cons.fill = GridBagConstraints.HORIZONTAL;
         cons.ipady = 95;
         cons.anchor = GridBagConstraints.NORTHWEST;
         cons.insets = new Insets(12, 12, 12, 12);
@@ -252,6 +311,7 @@ public class PanelLines extends JPanel {
         cons.gridx = 0;
         cons.gridy = 1;
         cons.ipady = -6;
+        cons.fill = GridBagConstraints.HORIZONTAL;
         cons.anchor = GridBagConstraints.NORTHWEST;
         cons.insets = new Insets(6, 12, 0, 12);
         add(panelSearch, cons);
