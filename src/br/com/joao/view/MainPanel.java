@@ -97,6 +97,14 @@ public class MainPanel extends JPanel {
     }
 
     private void addListeners() {
+        btnSearch.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                TrainControl.search(txtSearch.getText());
+                tableTrains.repaint();
+            }
+        });
+
         btnViewLines.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
