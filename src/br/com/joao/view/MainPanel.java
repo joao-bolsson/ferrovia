@@ -1,5 +1,6 @@
 package br.com.joao.view;
 
+import br.com.joao.control.TrainControl;
 import br.com.joao.model.Engineer;
 import br.com.joao.model.Train;
 import br.com.joao.model.TrainTableModel;
@@ -114,6 +115,34 @@ public class MainPanel extends JPanel {
                 prepareToEdit(rowSelected);
             }
         });
+
+        btnClear.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                clear();
+            }
+        });
+
+        btnRemove.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                Object valueAt = tableTrains.getValueAt(rowSelected, TrainTableModel.TRAIN_COLUMN);
+                if (valueAt instanceof Train) {
+                    Train train = (Train) valueAt;
+                    TrainControl.remove(train);
+                    tableTrains.repaint();
+                    clear();
+                }
+            }
+        });
+    }
+
+    private void clear() {
+        lblIdValue.setText(AUTO_INCREMENT);
+        comboEng.setSelectedIndex(0);
+        comboType.setSelectedIndex(0);
+        btnClear.setEnabled(false);
+        btnAdd.setText("Adicionar");
     }
 
     private void prepareToEdit(final int row) {
@@ -123,6 +152,8 @@ public class MainPanel extends JPanel {
             lblIdValue.setText(Integer.toString(train.getId()));
             comboEng.setSelectedItem(train.getEngineer());
             comboType.setSelectedItem(train.getType());
+            btnClear.setEnabled(true);
+            btnAdd.setText("Atualizar");
         }
     }
 
@@ -201,6 +232,7 @@ public class MainPanel extends JPanel {
         cons.gridy = 3;
         cons.anchor = GridBagConstraints.NORTHWEST;
         cons.insets = new Insets(18, 130, 14, 0);
+        btnClear.setEnabled(false);
         panelForm.add(btnClear, cons);
 
         cons = new GridBagConstraints();

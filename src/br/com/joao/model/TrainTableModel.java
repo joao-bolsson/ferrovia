@@ -119,4 +119,14 @@ public class TrainTableModel extends AbstractTableModel {
         return columns[column];
     }
 
+    /**
+     * Remove a train from this model.
+     *
+     * @param train Train to remove.
+     */
+    public void remove(final Train train) {
+        lines.remove(train);
+        fireTableDataChanged();
+    }
+
 }
