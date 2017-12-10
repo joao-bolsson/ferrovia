@@ -135,6 +135,16 @@ public class MainPanel extends JPanel {
                 }
             }
         });
+
+        btnAdd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                Train train = new Train((Engineer) comboEng.getSelectedItem(), (Train.Type) comboType.getSelectedItem());
+                TrainControl.add(train);
+                tableTrains.repaint();
+                clear();
+            }
+        });
     }
 
     private void clear() {

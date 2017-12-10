@@ -24,6 +24,18 @@ public class Train {
     private Type type;
 
     /**
+     * Creates a new Train.
+     *
+     * @param engineer Train Engineer.
+     * @param type Train type.
+     */
+    public Train(final Engineer engineer, final Type type) {
+        this.id = 0;
+        this.engineer = engineer;
+        this.type = type;
+    }
+
+    /**
      * Creates a train.
      *
      * @param id Train identifier.
@@ -126,6 +138,13 @@ public class Train {
         public Type(final int id, final String name) {
             this.id = id;
             this.name = name;
+        }
+
+        /**
+         * @return Type id.
+         */
+        public int getId() {
+            return id;
         }
 
         @Override

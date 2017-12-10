@@ -35,6 +35,13 @@ public class Engineer {
     }
 
     /**
+     * @return Engineer id.
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
      * @return Engineer name.
      */
     public String getName() {
@@ -59,7 +66,7 @@ public class Engineer {
         if (this == obj) {
             return true;
         }
-        
+
         if (obj instanceof Engineer) {
             final Engineer other = (Engineer) obj;
             return other.id == id && other.name.equals(name);

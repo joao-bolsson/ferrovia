@@ -129,4 +129,14 @@ public class TrainTableModel extends AbstractTableModel {
         fireTableDataChanged();
     }
 
+    /**
+     * Add a train in this model.
+     *
+     * @param train Train to add.
+     */
+    public void add(final Train train) {
+        lines.add(train);
+        fireTableDataChanged();
+    }
+
 }
