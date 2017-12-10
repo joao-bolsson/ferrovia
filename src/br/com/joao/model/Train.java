@@ -23,6 +23,8 @@ public class Train {
 
     private Type type;
 
+    private static final Map<Integer, Train> TRAINS = new HashMap<>();
+
     /**
      * Creates a new Train.
      *
@@ -97,10 +99,24 @@ public class Train {
     }
 
     /**
+     * Gets the train by given id.
+     *
+     * @param id Train identifier.
+     * @return The train.
+     */
+    public static Train getTrain(final int id) {
+        if (TRAINS.isEmpty()) {
+            getTrains();
+        }
+        return TRAINS.get(id);
+    }
+
+    /**
      * @return All engineers in database.
      */
     public static List<Train> getTrains() {
         List<Train> list = new ArrayList<>();
+        TRAINS.clear();
         try {
             Connection conn = ConnectionJ.getConnection();
             try (Statement stmt = conn.createStatement()) {
@@ -116,6 +132,7 @@ public class Train {
 
                     Train train = new Train(id, engineer, type);
                     list.add(train);
+                    TRAINS.put(train.id, train);
                 }
             }
         } catch (final SQLException ex) {
@@ -127,7 +144,7 @@ public class Train {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("#");
-        builder.append(id).append(" - ").append(engineer.getName()).append(" - ").append(type.name);
+        builder.append(id).append(" - ").append(type.name);
 
         return builder.toString();
     }

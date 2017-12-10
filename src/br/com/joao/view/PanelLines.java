@@ -2,6 +2,7 @@ package br.com.joao.view;
 
 import br.com.joao.model.Station;
 import br.com.joao.model.Train;
+import br.com.joao.model.TrainLinesTableModel;
 import java.awt.BorderLayout;
 import java.awt.Dialog;
 import java.awt.Dimension;
@@ -20,7 +21,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.text.DateFormatter;
 import javax.swing.text.DefaultFormatterFactory;
 
@@ -62,14 +62,7 @@ public class PanelLines extends JPanel {
         btnClear = new JButton("Limpar");
         panelTable = new JPanel(new BorderLayout());
         scrollTable = new JScrollPane();
-        table = new JTable(new DefaultTableModel(
-                new Object[][]{
-                    {"1", "1", "14:30", "15:30"}
-                },
-                new String[]{
-                    "Trem", "Estação", "Hora Ida", "Hora Volta"
-                }
-        ));
+        table = new JTable(TrainLinesTableModel.getInstance());
         panelSearch = new JPanel(new GridBagLayout());
         lblTrainSearch = new JLabel("Trem");
         comboTrainSearch = new JComboBox<>();

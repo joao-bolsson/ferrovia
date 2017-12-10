@@ -59,11 +59,11 @@ CREATE TABLE `trem` (
 
 INSERT INTO `trem` (`id`, `engenheiro`, `tipo`) VALUES
 (2, 1, 1),
-(3, 2, 1),
-(5, 2, 2),
-(6, 3, 2),
 (7, 5, 1),
-(8, 4, 1);
+(8, 4, 1),
+(11, 1, 2),
+(12, 1, 1),
+(13, 2, 2);
 
 CREATE TABLE `trem_estacao` (
   `id_trem` smallint(5) UNSIGNED NOT NULL,
@@ -71,6 +71,12 @@ CREATE TABLE `trem_estacao` (
   `hora_ida` time NOT NULL,
   `hora_volta` time NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `trem_estacao` (`id_trem`, `id_estacao`, `hora_ida`, `hora_volta`) VALUES
+(2, 1, '14:30:00', '15:30:00'),
+(2, 5, '16:30:00', '17:30:00'),
+(11, 1, '14:00:00', '15:00:00'),
+(11, 2, '14:10:00', '15:10:00');
 
 
 ALTER TABLE `engenheiro`
@@ -105,7 +111,7 @@ ALTER TABLE `tipo_estacao`
 ALTER TABLE `tipo_trem`
   MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 ALTER TABLE `trem`
-  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 ALTER TABLE `estacao`
   ADD CONSTRAINT `estacao_ibfk_1` FOREIGN KEY (`tipo`) REFERENCES `tipo_estacao` (`id`);

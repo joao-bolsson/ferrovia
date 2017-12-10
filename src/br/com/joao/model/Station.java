@@ -23,6 +23,8 @@ public class Station {
 
     private Type type;
 
+    private static final Map<Integer, Station> STATIONS = new HashMap<>();
+
     /**
      * Creates a station.
      *
@@ -133,10 +135,24 @@ public class Station {
     }
 
     /**
+     * Gets the station by given id.
+     *
+     * @param id Station identifier.
+     * @return The station.
+     */
+    public static Station getStation(final int id) {
+        if (STATIONS.isEmpty()) {
+            getStations();
+        }
+        return STATIONS.get(id);
+    }
+
+    /**
      * @return All Stations in database.
      */
     public static List<Station> getStations() {
         List<Station> list = new ArrayList<>();
+        STATIONS.clear();
         try {
             Connection conn = ConnectionJ.getConnection();
             try (Statement stmt = conn.createStatement()) {
@@ -152,6 +168,7 @@ public class Station {
 
                     Station station = new Station(id, name, address, type);
                     list.add(station);
+                    STATIONS.put(station.id, station);
                 }
             }
         } catch (final SQLException ex) {
