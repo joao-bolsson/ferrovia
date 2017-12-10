@@ -21,6 +21,8 @@ public class TrainLinesTableModel extends AbstractTableModel {
 
     private static final int TRAIN_COLUMN = 0, STATION_COLUMN = 1, DEPARTURE_COLUMN = 2, RETURN_COLUMN = 3;
 
+    public static final int TRAIN_LINE_COLUMN = -1;
+
     private static TrainLinesTableModel INSTANCE;
 
     /**
@@ -94,9 +96,32 @@ public class TrainLinesTableModel extends AbstractTableModel {
             case RETURN_COLUMN:
                 return trainLine.getReturnTime();
 
+            case TRAIN_LINE_COLUMN:
+                return trainLine;
+
             default:
                 throw new UnsupportedOperationException("Value not found.");
         }
+    }
+
+    /**
+     * Remove a train line from this model.
+     *
+     * @param line Train line to remove.
+     */
+    public void remove(final TrainLine line) {
+        lines.remove(line);
+        fireTableDataChanged();
+    }
+
+    /**
+     * Add a train line in this model.
+     *
+     * @param line Train line to add.
+     */
+    public void add(final TrainLine line) {
+        lines.add(line);
+        fireTableDataChanged();
     }
 
 }

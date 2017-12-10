@@ -1,7 +1,9 @@
 package br.com.joao.view;
 
+import br.com.joao.control.TrainLineControl;
 import br.com.joao.model.Station;
 import br.com.joao.model.Train;
+import br.com.joao.model.TrainLine;
 import br.com.joao.model.TrainLinesTableModel;
 import java.awt.BorderLayout;
 import java.awt.Dialog;
@@ -10,6 +12,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.SimpleDateFormat;
@@ -23,6 +27,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.text.DateFormatter;
 import javax.swing.text.DefaultFormatterFactory;
 
@@ -45,6 +51,10 @@ public class PanelLines extends JPanel {
     private static final Dimension MIN_SIZE = new Dimension(570, 489);
 
     private static final List<Station> STATIONS = Station.getStations();
+
+    private int rowSelected;
+
+    private static final String UPDATE = "Atualizar";
 
     /**
      * Creates a panel to show lines.
@@ -111,7 +121,73 @@ public class PanelLines extends JPanel {
         }
     }
 
+    private void clear() {
+        comboTrain.setSelectedIndex(0);
+        comboStation.setSelectedIndex(0);
+        txtDepartureTime.setText("");
+        txtReturnTime.setText("");
+        btnClear.setEnabled(false);
+        btnAdd.setText("Adicionar");
+    }
+
     private void addListeners() {
+        btnClear.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                clear();
+            }
+        });
+
+        btnRemove.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                Object valueAt = table.getValueAt(rowSelected, TrainLinesTableModel.TRAIN_LINE_COLUMN);
+                if (valueAt instanceof TrainLine) {
+                    TrainLine line = (TrainLine) valueAt;
+                    TrainLineControl.remove(line);
+                    table.repaint();
+                    clear();
+                }
+            }
+        });
+
+        btnAdd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                Train train = (Train) comboTrain.getSelectedItem();
+                Station station = (Station) comboStation.getSelectedItem();
+                String departureTime = txtDepartureTime.getText();
+                String returnTime = txtReturnTime.getText();
+                if (!departureTime.isEmpty() && !returnTime.isEmpty()) {
+                    if (btnAdd.getText().equals(UPDATE)) {
+                        // atualizar
+                        Object valueAt = TrainLinesTableModel.getInstance().getValueAt(rowSelected,
+                                TrainLinesTableModel.TRAIN_LINE_COLUMN);
+                        if (valueAt instanceof TrainLine) {
+                            TrainLine line = (TrainLine) valueAt;
+
+                            Train oldTrain = line.getTrain();
+                            Station oldStation = line.getStation();
+
+                            line.setTrain(train);
+                            line.setStation(station);
+                            line.setDepartureTime(departureTime);
+                            line.setReturnTime(returnTime);
+
+                            TrainLineControl.update(line, oldTrain, oldStation);
+                        }
+                    } else {
+                        // adicionar
+                        TrainLine trainLine = new TrainLine(station, train, departureTime, returnTime);
+                        TrainLineControl.add(trainLine);
+                    }
+
+                    table.repaint();
+                    clear();
+                }
+            }
+        });
+
         comboTrain.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(final ItemEvent e) {
@@ -134,6 +210,31 @@ public class PanelLines extends JPanel {
                 }
             }
         });
+
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(final ListSelectionEvent e) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow >= 0) { // evita ArrayIndexOutOfBounds
+                    rowSelected = selectedRow;
+                }
+                prepareToEdit(rowSelected);
+            }
+        });
+    }
+
+    private void prepareToEdit(final int row) {
+        Object valueAt = table.getValueAt(row, TrainLinesTableModel.TRAIN_LINE_COLUMN);
+        if (valueAt instanceof TrainLine) {
+            TrainLine line = (TrainLine) valueAt;
+            comboTrain.setSelectedItem(line.getTrain());
+            comboStation.setSelectedItem(line.getStation());
+            txtDepartureTime.setText(line.getDepartureTime());
+            txtReturnTime.setText(line.getReturnTime());
+
+            btnClear.setEnabled(true);
+            btnAdd.setText(UPDATE);
+        }
     }
 
     private void fillFields() {
@@ -192,7 +293,8 @@ public class PanelLines extends JPanel {
         cons.insets = new Insets(12, 14, 0, 0);
         panelForm.add(lblDepartureTime, cons);
 
-        txtDepartureTime.setFormatterFactory(new DefaultFormatterFactory(new DateFormatter(new SimpleDateFormat("hh:mm"))));
+        txtDepartureTime.setFormatterFactory(new DefaultFormatterFactory(new DateFormatter(
+                new SimpleDateFormat("HH:mm"))));
         cons = new GridBagConstraints();
         cons.gridx = 0;
         cons.gridy = 3;
@@ -210,7 +312,8 @@ public class PanelLines extends JPanel {
         cons.insets = new Insets(12, 12, 0, 0);
         panelForm.add(lblReturnTime, cons);
 
-        txtReturnTime.setFormatterFactory(new DefaultFormatterFactory(new DateFormatter(new SimpleDateFormat("hh:mm"))));
+        txtReturnTime.setFormatterFactory(new DefaultFormatterFactory(new DateFormatter(
+                new SimpleDateFormat("HH:mm"))));
         cons = new GridBagConstraints();
         cons.gridx = 5;
         cons.gridy = 3;
@@ -241,6 +344,7 @@ public class PanelLines extends JPanel {
         cons.gridwidth = 4;
         cons.anchor = GridBagConstraints.NORTHWEST;
         cons.insets = new Insets(6, 136, 14, 0);
+        btnClear.setEnabled(false);
         panelForm.add(btnClear, cons);
 
         cons = new GridBagConstraints();
