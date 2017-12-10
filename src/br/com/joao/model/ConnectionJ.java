@@ -20,7 +20,7 @@ public class ConnectionJ {
      */
     public static Connection getConnection() {
         try {
-            Settings settings = SettingsIO.readSettingsFile(new File("/home/joao/CC/FBD/Ferrovia/src/settings.xml"));
+            Settings settings = SettingsIO.readSettingsFile(new File("/home/joao/CC/FBD/Ferrovia/resources/settings.xml"));
 
             Connection connection;
 

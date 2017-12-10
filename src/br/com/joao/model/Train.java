@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  *
@@ -83,6 +84,29 @@ public class Train {
         this.type = type;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 59 * hash + this.id;
+        hash = 59 * hash + Objects.hashCode(this.engineer);
+        hash = 59 * hash + Objects.hashCode(this.type);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj instanceof Train) {
+            final Train other = (Train) obj;
+
+            return other.id == id && other.engineer.equals(engineer) && other.type.equals(type);
+        }
+        return false;
+    }
+
     /**
      * Class that represents the train type.
      */
@@ -107,6 +131,27 @@ public class Train {
         @Override
         public String toString() {
             return name;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 61 * hash + this.id;
+            hash = 61 * hash + Objects.hashCode(this.name);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+
+            if (obj instanceof Type) {
+                final Type other = (Type) obj;
+                return other.id == id && other.name.equals(name);
+            }
+            return false;
         }
 
         /**

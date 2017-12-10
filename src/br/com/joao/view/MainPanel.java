@@ -21,6 +21,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -42,6 +44,8 @@ public class MainPanel extends JPanel {
     private JDialog dialog;
 
     private static final String AUTO_INCREMENT = "Automático";
+
+    private int rowSelected;
 
     /**
      * Creates the main panel.
@@ -99,6 +103,27 @@ public class MainPanel extends JPanel {
                 panelLines.showAsDialog(dialog);
             }
         });
+
+        tableTrains.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(final ListSelectionEvent e) {
+                int selectedRow = tableTrains.getSelectedRow();
+                if (selectedRow >= 0) { // evita ArrayIndexOutOfBounds
+                    rowSelected = selectedRow;
+                }
+                prepareToEdit(rowSelected);
+            }
+        });
+    }
+
+    private void prepareToEdit(final int row) {
+        Object valueAt = tableTrains.getValueAt(row, TrainTableModel.TRAIN_COLUMN);
+        if (valueAt instanceof Train) {
+            Train train = (Train) valueAt;
+            lblIdValue.setText(Integer.toString(train.getId()));
+            comboEng.setSelectedItem(train.getEngineer());
+            comboType.setSelectedItem(train.getType());
+        }
     }
 
     private void init() {

@@ -34,6 +34,11 @@ public class TrainTableModel extends AbstractTableModel {
      */
     private static final int TYPE_COLUMN = 2;
 
+    /**
+     * Only used to gets the train object in a table line.
+     */
+    public static final int TRAIN_COLUMN = -1;
+
     private static TrainTableModel INSTANCE;
 
     /**
@@ -100,6 +105,10 @@ public class TrainTableModel extends AbstractTableModel {
 
             case TYPE_COLUMN:
                 return train.getType();
+
+            case TRAIN_COLUMN:
+                return train;
+
             default:
                 throw new UnsupportedOperationException("Value not found.");
         }
